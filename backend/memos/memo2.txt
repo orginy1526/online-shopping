@@ -1,0 +1,6 @@
+1. create iam user
+2. create a dynamodb table -> resources
+3. connect arn -> iam role
+    - aws dynamodb list-tables
+    - aws dynamodb describe-table --table-name UserTable
+4. create functions! 😄

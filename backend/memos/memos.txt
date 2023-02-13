@@ -1,0 +1,68 @@
+1. create iam user -> download access key
+2. aws configure
+3. create serverless application -> $ sls create -t aws-nodejs-typescript 
+4. npm i uuid aws-sdk   
+5. npm i
+6. create a dynamodb table
+    - aws dynamodb create-table \
+    --table-name <table-name> \
+    --attribute-definitions \
+        AttributeName=<attribute-name>,AttributeType=<attribute-type> \
+    --key-schema \
+        AttributeName=<attribute-name>,KeyType=<key-type> \
+    --provisioned-throughput \
+        ReadCapacityUnits=<read-capacity-units>,WriteCapacityUnits=<write-capacity-units> \
+    [--global-secondary-indexes <global-secondary-index-array>]
+
+    - if table already exists 
+        - aws dynamodb delete-table --table-name UserTable
+
+    - check to see if table created 
+        - aws dynamodb list-tables
+
+    - to get more information about the table
+        - aws dynamodb describe-table --table-name <table-name>
+
+7. iam role
+    - check iam roles
+        - aws iam list-roles
+
+    - delete iam role 
+        - aws iam delete-role --role-name <role-name>
+
+    - create an iam role
+        - aws iam create-role --role-name <role_name> --assume-role-policy-document file://<policy_file>.json
+
+    - in lambda-policy.json 
+        {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "lambda.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+
+    - aws iam create-role --role-name myLambdaRole --assume-role-policy-document file://lambda-policy.json
+
+
+8. updating Properties in iam section serverless 
+
+bash terminal command:
+1. clear terminal - ctl + L
+
+
+
+aws dynamodb create-table \
+    --table-name UserTable \
+    --attribute-definitions \
+        AttributeName=id,AttributeType=S \
+    --key-schema \
+        AttributeName=id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    
