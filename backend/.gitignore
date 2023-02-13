@@ -40,3 +40,6 @@ admin.env
 .env
 _meta
 .serverless
+
+#ACCESS KEY
+serverless_accessKeys.csv
