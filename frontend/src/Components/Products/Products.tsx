@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 import Paper from "@mui/material/Paper";
 import CustomizedDialogs from "./CustomizedDialogs";
+import userActions from "../../util/userActions";
 
 // products
 const Item = styled(Paper)(({ theme }) => ({
@@ -43,14 +44,12 @@ function Products(): JSX.Element {
   const [products, setProducts] = useState<object[]>([]);
 
   useEffect(() => {
-    fetch(
-      "https://data.gov.il/api/3/action/datastore_search?resource_id=4cc6c561-5975-4bac-904f-c06489ceeb6d"
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        const products = res.result.records;
+    userActions
+      .getProducts()
+      .then((products) => {
         setProducts(products);
-      });
+      })
+      .then(console.log);
   }, []);
 
   return (
@@ -71,25 +70,27 @@ function Products(): JSX.Element {
         alignItems="flex-start"
       >
         {products.map((product: any) => (
-          <Grid item xs={12} sm={6} md={3} key={product._id}>
+          <Grid item xs={12} sm={6} md={3} key={product.id}>
             <Item>
               <Button>
                 <img
-                  id={product._id}
-                  key={product._id}
+                  id={product.id}
+                  key={product.id}
                   style={{ width: "200px", height: "200px" }}
-                  src="https://cdn.pixabay.com/photo/2014/04/02/16/16/juice-306748__480.png"
+                  src={product.image}
                   alt=""
                 />
                 <ImageListItemBar
-                  title={product.name4}
-                  subtitle={product.name10}
+                  title={product.product_name}
+                  subtitle={product.category}
                   actionIcon={
                     <IconButton
                       sx={{ color: "rgba(255, 255, 255, 0.54)" }}
-                      aria-label={`info about ${product.name5}`}
+                      aria-label={`info about ${product.price}`}
                     >
-                      <InfoIcon onClick={(e) => handleClick(e, product, true)} />
+                      <InfoIcon
+                        onClick={(e) => handleClick(e, product, true)}
+                      />
                     </IconButton>
                   }
                 />

@@ -43,7 +43,9 @@ function Register2(): JSX.Element {
     user.city = data.city;
     user.street = data.street;
     console.log(user);
-    await userActions.addUser(user).then((res) => console.log(res));
+    await userActions
+      .addUser(user)
+      .then((user) => navigate("/about", { state: { user } }));
   };
 
   // navigate("/products");

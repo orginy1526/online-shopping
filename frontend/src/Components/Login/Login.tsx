@@ -12,6 +12,7 @@ import userActions from "../../util/userActions";
 function Login(): JSX.Element {
   // all users
   const [users, setUsers] = useState<any>([]);
+  // const [user, setUser] = useState<any>();
 
   // user value from text filed
   let [userValue, setUserValue] = useState({ email: "", password: "" });
@@ -38,10 +39,10 @@ function Login(): JSX.Element {
   // "1234"
 
   // admin email & password
-  // hbingley1@plala.or.jp
-  // CQutx25i8r
+  // orginy1526@gmail.com
+  // Orginy123!
 
-  const onSubmit = (event: any) => {
+  const onSubmit = async (event: any) => {
     event.preventDefault();
     // password validation
     const emailRegex =
@@ -62,6 +63,13 @@ function Login(): JSX.Element {
         "orginy1526@gmail.com" === userValue.email &&
         "Orginy123!" === userValue.password
     );
+    let user = users.filter(
+      (user: any) =>
+      user.email === userValue.email && user.password === userValue.password
+    );
+    user = user[0]
+    console.log(user);
+
     isEmail &&
       Swal.fire({
         icon: "error",
@@ -75,7 +83,7 @@ function Login(): JSX.Element {
         text: "wrong email",
       });
     isUserExist
-      ? navigate("/about")
+      ? navigate("/about", { state: { user } })
       : !emailRegex.test(userValue.email) &&
         Swal.fire({
           icon: "error",

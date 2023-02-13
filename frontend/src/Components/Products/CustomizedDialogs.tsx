@@ -82,14 +82,14 @@ export default function CustomizedDialogs({ product, bool }: any) {
           id="customized-dialog-title"
           onClose={handleClose}
         >
-          {product.name4}
+          {product.product_name}
         </BootstrapDialogTitle>
         <DialogContent dividers>
           <List
             sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
           >
-            <ListItem>{product.name10}</ListItem>
-            <ListItem>{product.name5}</ListItem>
+            <ListItem>{product.category}</ListItem>
+            <ListItem>{product.price}</ListItem>
           </List>
         </DialogContent>
         <DialogActions>

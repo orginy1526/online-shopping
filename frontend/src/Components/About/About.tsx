@@ -2,10 +2,42 @@ import "./About.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { Alert, Box, CardActionArea, Grid } from "@mui/material";
+import { Alert, Button, CardActionArea, Grid } from "@mui/material";
 import Navbar from "../Navbar/Navbar";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import userActions from "../../util/userActions";
+// import cartDrawer from "../Navbar/cartDrawer/cartDrawer";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import TemporaryDrawer from "../Navbar/TemporaryDrawer/TemporaryDrawer";
 
 function About(): JSX.Element {
+  const [text, setText] = useState("");
+  const [shoppingCartStatus, setShoppingCartStatus] = useState("");
+  const location = useLocation();
+  const user = location.state.user.id;
+  console.log(user);
+  console.log(location.state.user);
+
+  useEffect(() => {
+    userActions.getShoppingCartStatus(user.id).then((res) => {
+      setShoppingCartStatus(res);
+      switch (shoppingCartStatus) {
+        case "open":
+          setText("continue shopping");
+          break;
+        case "close":
+          setText("new shopping");
+          break;
+        case "new":
+          setText("first shopping");
+          break;
+      }
+      console.log(text);
+    });
+  }, [user]);
+
+  // cart button text
   return (
     <div className="About">
       <Navbar />
@@ -37,12 +69,22 @@ function About(): JSX.Element {
             </CardContent>
           </CardActionArea>
         </Card>
-        <Alert sx={{ m: 3 }} severity="success">
-          Welcome Aboard! 😄
-        </Alert>
-        <Alert severity="info">check You're last reservation 👀</Alert>
-        <Alert sx={{ m: 3 }} severity="warning">You have an open cart 🙀</Alert>
-
+        {shoppingCartStatus === "open" && (
+          <>
+            <Alert sx={{ m: 3 }} severity="warning">
+              You have an open cart 🙀
+            </Alert>
+          </>
+        )}
+        {shoppingCartStatus === "close" && (
+          <Alert severity="info">check You're last reservation 👀</Alert>
+        )}
+        {shoppingCartStatus === "new" && (
+          <Alert sx={{ m: 3 }} severity="success">
+            Welcome Aboard! 😄
+          </Alert>
+        )}
+        <TemporaryDrawer text={text} />
       </Grid>
     </div>
   );

@@ -6,6 +6,8 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Grid } from "@mui/material";
 import Navbar from "../Navbar/Navbar";
+import React from "react";
+import userActions from "../../util/userActions";
 
 const bull = (
   <Box
@@ -16,6 +18,12 @@ const bull = (
   </Box>
 );
 function Details(): JSX.Element {
+  const [numOfOrders, setNumOfOrders] = React.useState("");
+  const [numOfProducts, setNumOfProducts] = React.useState("");
+  React.useEffect(() => {
+    userActions.getNumOfOrders().then((res) => setNumOfOrders(res));
+    userActions.getNumOfProducts().then((res) => setNumOfProducts(res));
+  }, []);
   return (
     <div className="Details">
       <Navbar />
@@ -34,9 +42,8 @@ function Details(): JSX.Element {
               Products 🗳️
             </Typography>
             <Typography variant="body2" sx={{ m: 2 }}>
-              We currently hold 0 products in store
+              We currently hold {numOfProducts} products in store
               <br />
-              {'"a benevolent smile"'}
             </Typography>
             <hr />
             {/* number of orders */}
@@ -44,9 +51,8 @@ function Details(): JSX.Element {
               Orders 💲
             </Typography>
             <Typography variant="body2" sx={{ m: 2 }}>
-              We've made 0 orders so far
+              We've made {numOfOrders} orders so far
               <br />
-              {'"a benevolent smile"'}
             </Typography>
           </CardContent>
         </Card>

@@ -109,7 +109,7 @@ export default function PersistentDrawerLeft(e: any) {
           (text, index) => (
             <ListItem key={product.id} disablePadding>
               <ListItemButton>
-                <ListItemText primary={text} />
+                <ListItemText primary={` ${text}`} />
               </ListItemButton>
             </ListItem>
           )

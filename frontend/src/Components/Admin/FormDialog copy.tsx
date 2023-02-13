@@ -5,6 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import adminActions from "../../util/adminActions";
 
 // editIcon
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,7 +14,7 @@ import { Typography } from "@mui/material";
 import Product from "../../model/Product";
 
 export default function FormDialog(e: any) {
-  const [product, setProduct] = React.useState(e.e);
+  const product = e.e;
 
   const [open, setOpen] = React.useState(false);
 
@@ -25,29 +26,35 @@ export default function FormDialog(e: any) {
     setOpen(false);
   };
 
-  // React.useEffect(() => {
-  // }, [e, product]);
+  // use effect
+  React.useEffect(() => {}, []);
 
   // setValue
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue } = useForm({
+    defaultValues: {
+      id: product.id,
+      user_id: product.user_id,
+      product_name: product.product_name,
+      price: product.price,
+      category: product.category,
+      image: product.image,
+    },
+  });
 
   const onChange = async (event: any) => {
-    // console.log(data);
     console.log(event.target.value);
+    console.log(product);
 
-    setProduct({ ...product, first_name: event.target.value });
-
-    // const product = new Product();
-    // product.category = data.category;
-    // product.price = Number(data.price);
-    // product.product_name = data.product_name;
-    // product.image = data.image[0].name;
-    // await adminActions.adsdProduct(product).then(console.log);
-    // handleClose();
+    // setProduct({ ...product, first_name: event.target.value });
   };
 
   const onSubmit = async (data: any) => {
+    data.price = Number(data.price);
     console.log(data);
+    adminActions.updateProduct(data.id, data).then(() => {
+      window.location.reload();
+    });
+    handleClose();
   };
   return (
     <div>
@@ -65,7 +72,6 @@ export default function FormDialog(e: any) {
             type="text"
             fullWidth
             {...register("product_name")}
-            value={product.product_name}
             onChange={onChange}
             variant="standard"
           />

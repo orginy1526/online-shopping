@@ -39,6 +39,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Grid } from "@mui/material";
+import userActions from "../../util/userActions";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -140,6 +141,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Navbar(props: Props): JSX.Element {
+  // search product
+  const getProductByName = (name: any) => {
+    userActions.getProductByName("kiwi").then(console.log);
+  };
   // drawer
   const [state, setState] = React.useState({
     top: false,
@@ -213,6 +218,7 @@ function Navbar(props: Props): JSX.Element {
       <Divider />
     </Box>
   );
+
   // menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -345,7 +351,7 @@ function Navbar(props: Props): JSX.Element {
   return (
     <div className="Navbar">
       {/* collapse */}
-      <Box sx={{ display: "flex" ,margin:-3}}>
+      <Box sx={{ display: "flex", margin: -3 }}>
         <CssBaseline />
         <AppBar component="nav">
           <Toolbar>
@@ -420,7 +426,7 @@ function Navbar(props: Props): JSX.Element {
                 Logout&nbsp; <LogoutIcon />
               </Button>
             </Box>
-            <Search>
+            <Search onChange={getProductByName}>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>

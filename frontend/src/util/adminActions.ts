@@ -20,7 +20,18 @@ class AdminActions {
     );
     return objToArr(response.data)[0].products;
   }
-
+  public async updateProduct(
+    productId: string,
+    product: Product
+  ): Promise<any> {
+    const res = await axios.put<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/product/updateProduct/" +
+        productId,
+      product
+    );
+    // return res.data.product;
+    return res.data.updated_product;
+  }
 }
 
 const adminActions = new AdminActions();

@@ -20,7 +20,6 @@ export default function FormDialog() {
   const { register, handleSubmit, setValue } = useForm();
 
   const handleClose = () => {
-    console.log(register);
     setOpen(false);
   };
 
@@ -32,7 +31,9 @@ export default function FormDialog() {
     product.price = Number(data.price);
     product.product_name = data.product_name;
     product.image = data.image[0].name;
-    await adminActions.addProduct(product).then(console.log);
+    console.log(product);
+
+    await adminActions.addProduct(product).then(() => window.location.reload());
     handleClose();
   };
 

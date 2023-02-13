@@ -20,13 +20,48 @@ class UserActions {
     );
     return objToArr(response.data)[0].users;
   }
+  public async getProducts(): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/product/getProducts"
+    );
+    return objToArr(response.data)[0].products;
+  }
 
-  //   public async getOneUser(userId: number): Promise<User> {
-  //     const response = await axios.get<User[]>(
-  //       "http://localhost:3001/api/user/" + userId
-  //     );
-  //     return response.data[0];
-  //   }
+  public async getShoppingCartStatus(userId: string): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/shoppingCart/getShoppingCartStatus/" +
+        userId
+    );
+    return objToArr(response.data)[0].shoppingCart_status;
+  }
+
+  public async getUser(userId: string): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/user/getUser/" +
+        userId
+    );
+    return objToArr(response.data)[0].user;
+  }
+  public async getNumOfOrders(): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/order/getNumOfOrders"
+    );
+    return response.data.orders_number;
+  }
+  public async getNumOfProducts(): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/product/getNumOfProducts"
+    );
+    return response.data.products_number;
+  }
+
+  public async getProductByName(name: string): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/product/getProductByName/" +
+        name
+    );
+    return objToArr(response.data)[0].product;
+  }
 }
 
 const userActions = new UserActions();
