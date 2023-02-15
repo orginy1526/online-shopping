@@ -62,6 +62,24 @@ class UserActions {
     );
     return objToArr(response.data)[0].product;
   }
+
+  public async getProductByCategory(category: string | String): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/product/getProductByCategory/" +
+        category
+    );
+    return objToArr(response.data)[0].products;
+  }
+  public async getShoppingCart(userId: string): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/shoppingCart/getShoppingCart/" +
+        userId
+    );
+    return objToArr(response.data)[0].shoppingCart;
+  }
+  public async getShoppingCartProducts(shoppingCart: any): Promise<any> {
+    return objToArr(shoppingCart.products);
+  }
 }
 
 const userActions = new UserActions();

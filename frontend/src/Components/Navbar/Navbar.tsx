@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import { useNavigate } from "react-router-dom";
+import { Await, useNavigate } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
@@ -40,6 +40,11 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Grid } from "@mui/material";
 import userActions from "../../util/userActions";
+import Product from "../../model/Product";
+
+// transfer products
+import { DataContext } from "../../util/DataContext";
+import Products from "../Products/Products";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -93,6 +98,8 @@ interface Props {
    * You won't need it on your project.
    */
   window?: () => Window;
+  onChildData?: (data: any) => void;
+  user?: any;
 }
 
 const drawerWidth = 240;
@@ -141,9 +148,27 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Navbar(props: Props): JSX.Element {
+  // get products by category
+  const getProductsByCategory = async (category: string | String) => {
+    console.log(category);
+    await userActions
+      .getProductByCategory(category)
+      .then((res) => props.onChildData && props.onChildData(res));
+  };
   // search product
-  const getProductByName = (name: any) => {
-    userActions.getProductByName("kiwi").then(console.log);
+  const [name, setName] = useState("");
+  const getProductByName = (e: any) => {
+    setName(e.target.value);
+  };
+
+  const [products, setProducts] = useState([]);
+
+  const onSearch = async (name: string) => {
+    console.log("yo");
+    await userActions
+      .getProductByName(`${name}`)
+      .then((res) => props.onChildData && props.onChildData(res));
+    console.log(products);
   };
   // drawer
   const [state, setState] = React.useState({
@@ -230,24 +255,41 @@ function Navbar(props: Props): JSX.Element {
   };
   // products
   const categories = [
-    "Fruit",
+    "fruit",
     "Vegetables",
     "Vegan",
     "Snacks",
     "Meat",
     "Dairy",
   ];
-  const [products, setProducts] = useState<object[]>([]);
+  // const [products, setProducts] = useState<object[]>([]);
 
+  // get shopping cart
+  const [shoppingCart, setShoppingCart] = useState<any>();
+
+  const getShoppingCartProducts = async () => {
+    await userActions.getShoppingCartProducts(shoppingCart).then(console.log);
+  };
+
+  const getShoppingCart = async (userId: string) => {
+    console.log(userId);
+    await userActions.getShoppingCart(userId).then((res) => {
+      setShoppingCart(res);
+    });
+    getShoppingCartProducts();
+  };
   useEffect(() => {
+    // userId
+    console.log(props.user);
+    // old api products
     fetch(
       "https://data.gov.il/api/3/action/datastore_search?resource_id=4cc6c561-5975-4bac-904f-c06489ceeb6d"
     )
       .then((res) => res.json())
       .then((res) => {
-        const products = res.result.records;
-        setProducts(products);
-        console.log(products);
+        // const products = res.result.records;
+        // setProducts(products);
+        // console.log(products);
       });
   }, []);
 
@@ -290,7 +332,13 @@ function Navbar(props: Props): JSX.Element {
         {(["left"] as const).map((anchor) => (
           <React.Fragment key={anchor}>
             <Grid container justifyContent="flex-start" margin="2px 2px">
-              <Button variant="contained" onClick={toggleDrawer(anchor, true)}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  toggleDrawer(anchor, true);
+                  getShoppingCart(props.user);
+                }}
+              >
                 <ShoppingCartIcon /> Cart
               </Button>
             </Grid>
@@ -331,6 +379,7 @@ function Navbar(props: Props): JSX.Element {
               onClick={() => {
                 handleClose();
                 handleDrawerToggle();
+                getProductsByCategory(item);
               }}
               disableRipple
             >
@@ -394,7 +443,10 @@ function Navbar(props: Props): JSX.Element {
                 <React.Fragment key={anchor}>
                   <Button
                     variant="contained"
-                    onClick={toggleDrawer(anchor, true)}
+                    onClick={() => {
+                      toggleDrawer(anchor, true);
+                      getShoppingCart(props.user);
+                    }}
                   >
                     <ShoppingCartIcon /> Cart
                   </Button>
@@ -427,9 +479,16 @@ function Navbar(props: Props): JSX.Element {
               </Button>
             </Box>
             <Search onChange={getProductByName}>
-              <SearchIconWrapper>
+              <Button
+                sx={{
+                  color: "#fff",
+                  padding: "theme.spacing(0, 2)",
+                  height: "100%",
+                }}
+                onClick={() => onSearch(name)}
+              >
                 <SearchIcon />
-              </SearchIconWrapper>
+              </Button>
               <StyledInputBase
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}

@@ -9,6 +9,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import Paper from "@mui/material/Paper";
 import CustomizedDialogs from "./CustomizedDialogs";
 import userActions from "../../util/userActions";
+// transfer products
+import { DataContext } from "../../util/DataContext";
+import React, { useContext, useRef } from "react";
 
 // products
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,6 +23,14 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function Products(): JSX.Element {
+  // transfer data
+  const myData = useRef("");
+  const handleChildData = (data: any) => {
+    myData.current = data;
+    setProducts(data);
+    console.log(products);
+  };
+
   // show component
   const [isShown, setIsShown] = useState(false);
   const [product, setProduct] = useState<object>({});
@@ -55,7 +66,7 @@ function Products(): JSX.Element {
   return (
     <div className="Products">
       {/* navbar */}
-      <Navbar />
+      <Navbar onChildData={handleChildData} />
 
       {/* dialog  */}
       {isShown && <CustomizedDialogs product={product} bool={bool} />}

@@ -40,7 +40,7 @@ function About(): JSX.Element {
   // cart button text
   return (
     <div className="About">
-      <Navbar />
+      <Navbar user={user}/>
       <Grid
         container
         spacing={0}
