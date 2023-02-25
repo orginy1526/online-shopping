@@ -14,6 +14,13 @@ class UserActions {
     );
     return response.data.user;
   }
+  public async updatedShoppingCart(shoppingCart: any): Promise<any> {
+    const response = await axios.put<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/shoppingCart/updateShoppingCart",
+      shoppingCart
+    );
+    return response.data.updated_shoppingCart;
+  }
   public async getUsers(): Promise<any> {
     const response = await axios.get<any>(
       "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/user/getUsers"
@@ -70,6 +77,13 @@ class UserActions {
     );
     return objToArr(response.data)[0].products;
   }
+  public async getProduct(id: string): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/product/getProduct/" +
+        id
+    );
+    return objToArr(response.data)[0].product;
+  }
   public async getShoppingCart(userId: string): Promise<any> {
     const response = await axios.get<any>(
       "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/shoppingCart/getShoppingCart/" +
@@ -77,8 +91,12 @@ class UserActions {
     );
     return objToArr(response.data)[0].shoppingCart;
   }
-  public async getShoppingCartProducts(shoppingCart: any): Promise<any> {
-    return objToArr(shoppingCart.products);
+  public async getShoppingCartProducts(userId: string): Promise<any> {
+    const response = await axios.get<any>(
+      "https://trlnmyjbc2.execute-api.us-east-1.amazonaws.com/dev/shoppingCart/getShoppingCart/" +
+        userId
+    );
+    return objToArr(response.data)[0].shoppingCart.products.arr;
   }
 }
 

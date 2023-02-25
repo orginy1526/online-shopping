@@ -65,22 +65,20 @@ function Login(): JSX.Element {
     );
     let user = users.filter(
       (user: any) =>
-      user.email === userValue.email && user.password === userValue.password
+        user.email === userValue.email && user.password === userValue.password
     );
-    user = user[0]
-    console.log(user);
-
-    isEmail &&
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "wrong password",
-      });
-    isPassword &&
+    user = user[0];
+    !isEmail &&
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "wrong email",
+      });
+    !isPassword &&
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "wrong password",
       });
     isUserExist
       ? navigate("/about", { state: { user } })

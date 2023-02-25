@@ -18,6 +18,9 @@ import Avatar from "@mui/material/Avatar";
 import ImageIcon from "@mui/icons-material/Image";
 import WorkIcon from "@mui/icons-material/Work";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+// add icon
+import AddIcon from "@mui/icons-material/Add";
+import userActions from "../../util/userActions";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -32,6 +35,7 @@ export interface DialogTitleProps {
   id: string;
   children?: React.ReactNode;
   onClose: () => void;
+  user?: any;
 }
 
 function BootstrapDialogTitle(props: DialogTitleProps) {
@@ -58,8 +62,67 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
   );
 }
 
-export default function CustomizedDialogs({ product, bool }: any) {
+// turn object to array
+const objToArr = (obj: object) => {
+  return Object.entries(obj).map((e) => ({ [e[0]]: e[1] }));
+};
+
+export default function CustomizedDialogs({ product, bool, user }: any) {
   const [open, setOpen] = React.useState(true);
+  // addProduct
+  let arr: any = [];
+  let shoppingCart = {};
+  const addProduct = async (product: any) => {
+    await userActions.getShoppingCart(user.id).then((res) => {
+      let arr: any = [];
+
+      if (Object.keys(res.products).length === 0) {
+        console.log("empty");
+        console.log(product);
+        arr.push(product);
+        res.products = { arr };
+        let newArr = res.products.arr;
+        newArr.map((e: any) => {
+          e.qty = 1;
+        });
+        console.log("res", res);
+      } else {
+        console.log("full");
+        let newArr = res.products.arr;
+        let counter = 0;
+        newArr.map((e: any, i: number) => {
+          // console.log(i);
+          if (e.id === product.id) {
+            console.log("increase qty");
+            counter = 1;
+            ++e.qty;
+          }
+        });
+        if (counter === 0) {
+          res.products.arr.push(product);
+          console.log(counter);
+        }
+        // counter = 0;
+        // console.log(counter);
+        // counter > 1 && console.log('yeshhh')
+      }
+      shoppingCart = res;
+    });
+    await userActions.updatedShoppingCart(shoppingCart).then((res) => {
+      const newArr = res.products.arr;
+      console.log(newArr);
+      newArr.map((e: any) => {
+        if (e.id === product.id) {
+          product.qty = e.qty;
+        }
+      });
+    });
+    console.log("product", product);
+  };
+
+  React.useEffect(() => {
+    console.log(product);
+  }, [product]);
 
   const handleClickOpen = () => {
     setOpen(open);
@@ -68,7 +131,6 @@ export default function CustomizedDialogs({ product, bool }: any) {
   const handleClose = () => {
     setOpen(!open);
   };
-  console.log(open);
 
   return (
     <div>
@@ -88,11 +150,26 @@ export default function CustomizedDialogs({ product, bool }: any) {
           <List
             sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
           >
-            <ListItem>{product.category}</ListItem>
-            <ListItem>{product.price}</ListItem>
+            <ListItem>
+              <b>category: </b> {product.category}
+            </ListItem>
+            <ListItem>
+              <b>price: </b> {product.price}
+            </ListItem>
+            <ListItem>
+              <b>qty: </b> {product.qty}
+            </ListItem>
           </List>
         </DialogContent>
         <DialogActions>
+          <Button
+            autoFocus
+            onClick={() => {
+              addProduct(product);
+            }}
+          >
+            <AddIcon />
+          </Button>
           <Button autoFocus onClick={handleClose}>
             Close
           </Button>

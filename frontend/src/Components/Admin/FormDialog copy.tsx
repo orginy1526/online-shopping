@@ -37,6 +37,7 @@ export default function FormDialog(e: any) {
       product_name: product.product_name,
       price: product.price,
       category: product.category,
+      qty: product.qty,
       image: product.image,
     },
   });
@@ -102,10 +103,12 @@ export default function FormDialog(e: any) {
               style={{ width: "200px", height: "200px" }}
             />
           </Typography>
-          <Button sx={{ margin: 2 }} variant="contained" component="label">
-            Replace Image
-            <input type="file" hidden {...register("image")} />
-          </Button>
+          <TextField
+            id="outlined-basic"
+            {...register("image")}
+            label="Outlined"
+            variant="outlined"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

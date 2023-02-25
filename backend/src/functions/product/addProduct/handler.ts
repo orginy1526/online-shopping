@@ -19,6 +19,7 @@ const addProduct: ValidatedEventAPIGatewayProxyEvent<
     product_name: event.body.product_name,
     price: event.body.price,
     image: event.body.image,
+    qty:1,
     created_at,
   };
   const params = {

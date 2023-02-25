@@ -45,6 +45,7 @@ import Product from "../../model/Product";
 // transfer products
 import { DataContext } from "../../util/DataContext";
 import Products from "../Products/Products";
+import TemporaryDrawer from "./TemporaryDrawer/TemporaryDrawer";
 
 type Anchor = "top" | "left" | "bottom" | "right";
 
@@ -164,7 +165,6 @@ function Navbar(props: Props): JSX.Element {
   const [products, setProducts] = useState([]);
 
   const onSearch = async (name: string) => {
-    console.log("yo");
     await userActions
       .getProductByName(`${name}`)
       .then((res) => props.onChildData && props.onChildData(res));
@@ -186,7 +186,6 @@ function Navbar(props: Props): JSX.Element {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
-
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -267,31 +266,19 @@ function Navbar(props: Props): JSX.Element {
   // get shopping cart
   const [shoppingCart, setShoppingCart] = useState<any>();
 
-  const getShoppingCartProducts = async () => {
-    await userActions.getShoppingCartProducts(shoppingCart).then(console.log);
-  };
-
-  const getShoppingCart = async (userId: string) => {
-    console.log(userId);
-    await userActions.getShoppingCart(userId).then((res) => {
-      setShoppingCart(res);
-    });
-    getShoppingCartProducts();
-  };
+  // const getShoppingCartProducts = async () => {
+  //   await userActions.getShoppingCartProducts(shoppingCart).then(console.log);
+  // };
+  const [user, setUser] = useState({});
   useEffect(() => {
-    // userId
+    setUser(props.user);
     console.log(props.user);
+    // userId
     // old api products
     fetch(
       "https://data.gov.il/api/3/action/datastore_search?resource_id=4cc6c561-5975-4bac-904f-c06489ceeb6d"
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        // const products = res.result.records;
-        // setProducts(products);
-        // console.log(products);
-      });
-  }, []);
+    ).then((res) => res.json());
+  }, [user]);
 
   // collapse
   const { window } = props;
@@ -329,35 +316,23 @@ function Navbar(props: Props): JSX.Element {
         </Button>
         {/* cart */}
         {/* drawer */}
-        {(["left"] as const).map((anchor) => (
-          <React.Fragment key={anchor}>
-            <Grid container justifyContent="flex-start" margin="2px 2px">
-              <Button
-                variant="contained"
-                onClick={() => {
-                  toggleDrawer(anchor, true);
-                  getShoppingCart(props.user);
-                }}
-              >
-                <ShoppingCartIcon /> Cart
-              </Button>
-            </Grid>
-            <Drawer
-              anchor={anchor}
-              open={state[anchor]}
-              onClose={toggleDrawer(anchor, false)}
-            >
-              {list(anchor)}
-            </Drawer>
-          </React.Fragment>
-        ))}
-        <Button sx={{ display: "block" }} onClick={() => navigate("/about")}>
+        <TemporaryDrawer text="cart" userId={user} />
+        <Button
+          sx={{ display: "block" }}
+          onClick={() => navigate("/about" , { state: { user: user } })}
+        >
           About{" "}
         </Button>
-        <Button sx={{ display: "block" }} onClick={() => navigate("/details")}>
+        <Button
+          sx={{ display: "block" }}
+          onClick={() => navigate("/details", { state: { user: user } })}
+        >
           Details{" "}
         </Button>
-        <Button sx={{ display: "block" }} onClick={() => navigate("/products")}>
+        <Button
+          sx={{ display: "block" }}
+          onClick={() => navigate("/products", { state: { user: user } })}
+        >
           Products{" "}
         </Button>
 
@@ -376,6 +351,7 @@ function Navbar(props: Props): JSX.Element {
         >
           {categories.map((item: String) => (
             <MenuItem
+              // key={item}
               onClick={() => {
                 handleClose();
                 handleDrawerToggle();
@@ -417,7 +393,7 @@ function Navbar(props: Props): JSX.Element {
               variant="h6"
               component="div"
               sx={{ flexGrow: 1, display: { xs: "none", md: "block" } }}
-              onClick={() => navigate("/about")}
+              onClick={() => navigate("/about", { state: { user: user } })}
             >
               Giny's SuperMarket
             </Typography>
@@ -437,46 +413,32 @@ function Navbar(props: Props): JSX.Element {
               >
                 Food Categories
               </Button>
-              {/* cart */}
-              {/* drawer */}
-              {(["left"] as const).map((anchor) => (
-                <React.Fragment key={anchor}>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      toggleDrawer(anchor, true);
-                      getShoppingCart(props.user);
-                    }}
-                  >
-                    <ShoppingCartIcon /> Cart
-                  </Button>
-                  <Drawer
-                    anchor={anchor}
-                    open={state[anchor]}
-                    onClose={toggleDrawer(anchor, false)}
-                  >
-                    {list(anchor)}
-                  </Drawer>
-                </React.Fragment>
-              ))}
-              <Button sx={{ color: "#fff" }} onClick={() => navigate("/about")}>
+              <Button sx={{ color: "#fff" }}>
+                <TemporaryDrawer text="cart" userId={user} />
+              </Button>
+              <Button
+                sx={{ color: "#fff" }}
+                onClick={() => navigate("/about", { state: { user: user } })}
+              >
                 About{" "}
               </Button>
               <Button
                 sx={{ color: "#fff" }}
-                onClick={() => navigate("/details")}
+                onClick={() => navigate("/details", { state: { user: user } })}
               >
                 Details{" "}
               </Button>
               <Button
                 sx={{ color: "#fff" }}
-                onClick={() => navigate("/products")}
+                onClick={() => navigate("/products", { state: { user: user } })}
               >
                 Products{" "}
               </Button>
               <Button sx={{ color: "#fff" }} onClick={() => navigate("/")}>
                 Logout&nbsp; <LogoutIcon />
               </Button>
+              {/* cart */}
+              {/* drawer */}
             </Box>
             <Search onChange={getProductByName}>
               <Button

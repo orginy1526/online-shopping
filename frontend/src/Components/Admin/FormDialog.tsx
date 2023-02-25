@@ -30,7 +30,8 @@ export default function FormDialog() {
     product.category = data.category;
     product.price = Number(data.price);
     product.product_name = data.product_name;
-    product.image = data.image[0].name;
+    product.image = data.image;
+    product.qty = 1;
     console.log(product);
 
     await adminActions.addProduct(product).then(() => window.location.reload());
@@ -76,10 +77,13 @@ export default function FormDialog() {
             fullWidth
             variant="standard"
           />
-          <Button sx={{ margin: 1 }} variant="contained" component="label">
-            Upload Image
-            <input type="file" hidden {...register("image")} />
-          </Button>
+
+          <TextField
+            id="outlined-basic"
+            {...register("image")}
+            label="Outlined"
+            variant="outlined"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

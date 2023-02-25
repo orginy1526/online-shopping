@@ -15,11 +15,11 @@ function About(): JSX.Element {
   const [text, setText] = useState("");
   const [shoppingCartStatus, setShoppingCartStatus] = useState("");
   const location = useLocation();
-  const user = location.state.user.id;
-  console.log(user);
-  console.log(location.state.user);
+  const user = location.state.user;
 
   useEffect(() => {
+    console.log(user);
+
     userActions.getShoppingCartStatus(user.id).then((res) => {
       setShoppingCartStatus(res);
       switch (shoppingCartStatus) {
@@ -33,14 +33,13 @@ function About(): JSX.Element {
           setText("first shopping");
           break;
       }
-      console.log(text);
     });
-  }, [user]);
+  }, [shoppingCartStatus, user]);
 
   // cart button text
   return (
     <div className="About">
-      <Navbar user={user}/>
+      <Navbar user={user} />
       <Grid
         container
         spacing={0}
@@ -84,7 +83,7 @@ function About(): JSX.Element {
             Welcome Aboard! 😄
           </Alert>
         )}
-        <TemporaryDrawer text={text} />
+        <TemporaryDrawer text={text} userId={user} />
       </Grid>
     </div>
   );

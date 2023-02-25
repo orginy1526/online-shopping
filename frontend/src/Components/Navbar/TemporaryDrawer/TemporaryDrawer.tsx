@@ -19,14 +19,21 @@ import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 
 import { Grid, styled } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import userActions from "../../../util/userActions";
 
 export interface Props {
-  text: string;
+  text?: string;
+  userId?: any;
 }
 type Anchor = "top" | "left" | "bottom" | "right";
 
 export default function TemporaryDrawer(props: Props) {
-  console.log(props.text);
+  const [products, setProducts] = React.useState({});
+
+  // turn object to array
+  const objToArr = (obj: object) => {
+    return Object.entries(obj).map((e) => ({ [e[0]]: e[1] }));
+  };
   // drawer
   const [state, setState] = React.useState({
     top: false,
@@ -43,10 +50,21 @@ export default function TemporaryDrawer(props: Props) {
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
   }));
-
+  const [productName, setProductName] = React.useState([]);
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
+      // console.log("to");
+      // console.log(props.userId.id);
+
+      userActions.getShoppingCartProducts(props.userId.id).then((res) => {
+        let arr: any = [];
+        res.map((e: any) => {
+          arr.push({ name: e.product_name, price: e.price, id: e.id });
+        });
+        setProductName(arr);
+        console.log(arr);
+      });
       if (
         event.type === "keydown" &&
         ((event as React.KeyboardEvent).key === "Tab" ||
@@ -58,6 +76,28 @@ export default function TemporaryDrawer(props: Props) {
       setState({ ...state, [anchor]: open });
     };
 
+  const handleClick = async (id: any) => {
+    console.log(id);
+    await userActions.getProduct(id).then(console.log);
+    let newCart: any;
+    await userActions.getShoppingCart(props.userId.id).then((res) => {
+      // newCart(res)
+      const oldCart = res.products.arr;
+      // console.log(res.products.arr)
+      oldCart.map((e: any) => {
+        console.log(e);
+        if (e.id === id) {
+          const i = oldCart.indexOf(e);
+          oldCart.splice(i, 1);
+          res.products.arr=oldCart
+        }
+
+      });
+      console.log(res);
+      userActions.updatedShoppingCart(res).then(console.log);
+    });
+  };
+
   const list = (anchor: Anchor) => (
     <Box
       sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
@@ -66,16 +106,17 @@ export default function TemporaryDrawer(props: Props) {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {["product1", "product2", "product3", "product4"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {productName.map((item: any) => (
+          <ListItem key={item.id} disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <FastfoodIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={item.name} />
               <ListItemIcon>
+                {item.price}
                 <AttachMoneyIcon />
-                <DeleteOutlineIcon />
+                <DeleteOutlineIcon onClick={() => handleClick(item.id)} />
               </ListItemIcon>
             </ListItemButton>
           </ListItem>

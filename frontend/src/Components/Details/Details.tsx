@@ -8,6 +8,7 @@ import { Grid } from "@mui/material";
 import Navbar from "../Navbar/Navbar";
 import React from "react";
 import userActions from "../../util/userActions";
+import { useLocation } from "react-router-dom";
 
 const bull = (
   <Box
@@ -18,15 +19,19 @@ const bull = (
   </Box>
 );
 function Details(): JSX.Element {
+  const location = useLocation();
+  const user = location.state.user;
+
   const [numOfOrders, setNumOfOrders] = React.useState("");
   const [numOfProducts, setNumOfProducts] = React.useState("");
   React.useEffect(() => {
+    console.log(user);
     userActions.getNumOfOrders().then((res) => setNumOfOrders(res));
     userActions.getNumOfProducts().then((res) => setNumOfProducts(res));
-  }, []);
+  }, [user]);
   return (
     <div className="Details">
-      <Navbar />
+      <Navbar user={user}/>
       <Grid
         container
         spacing={0}
